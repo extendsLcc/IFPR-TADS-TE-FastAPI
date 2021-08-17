@@ -1,29 +1,49 @@
-from typing import Optional
+from typing import List
 
-from fastapi import FastAPI
-
+from fastapi import FastAPI, Response, status
 from pydantic import BaseModel
 
 
 class Item(BaseModel):
     id: int
     descricao: str
+    quantidade: int
     valor: float
 
 
 app = FastAPI()
 
+items: List[Item] = []
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+
+@app.get("/items")
+def index_items():
+    return items
+
+
+@app.post("/items")
+def add_item(item: Item):
+    items.append(item)
+    return item
+
+
+@app.get("/items/valor-total")
+def get_valor_total():
+    valor_total = sum([item.valor * item.quantidade for item in items])
+    return {"valor_total": valor_total}
 
 
 @app.get("/items/{item_id}")
-def read_item(item_id: int, q: Optional[str] = None):
-    return {"item_id": item_id, "q": q}
+def read_item(item_id: int, response: Response):
+    if not any(item.id == item_id for item in items):
+        response.status_code = status.HTTP_404_NOT_FOUND
+    return next((item for item in items if item.id == item_id), None)
 
 
-@app.post("/item")
-def add_item(novo_item: Item):
-    return novo_item
+@app.delete("/items/{item_id}")
+def delete_item(item_id: int, response: Response):
+    if not any(item.id == item_id for item in items):
+        response.status_code = status.HTTP_404_NOT_FOUND
+    items_copy = list(filter(lambda item: item.id is not item_id, items))
+    items.clear()
+    items.extend(items_copy)
