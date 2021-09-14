@@ -42,8 +42,7 @@ def read_item(item_id: int, response: Response):
 
 @app.delete("/items/{item_id}")
 def delete_item(item_id: int, response: Response):
+    global items
     if not any(item.id == item_id for item in items):
         response.status_code = status.HTTP_404_NOT_FOUND
-    items_copy = list(filter(lambda item: item.id is not item_id, items))
-    items.clear()
-    items.extend(items_copy)
+    items = [item for item in items if item.id != item_id]
