@@ -6,7 +6,7 @@ from dto.paginated_set import PaginatedSet
 from dto.update_product_dto import UpdateProductDto
 from models.product import Product
 
-router = APIRouter(prefix='/product')
+router = APIRouter(prefix='/products')
 
 
 @router.get('', response_model=PaginatedSet)
