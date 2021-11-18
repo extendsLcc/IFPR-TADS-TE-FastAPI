@@ -18,3 +18,19 @@ def test_create_product(client: TestClient) -> None:
     content = response.json()
     assert response.status_code == status.HTTP_201_CREATED
     assert content['name'] == product_mock['name']
+
+
+def test_update_product(client: TestClient) -> None:
+    product_mock = create_valid_product()
+    response = client.post("/products", json=product_mock)
+    content = response.json()
+    #
+    product_id = content.pop('id')
+    content['name'] = 'edited'
+    content['price'] = 0.5
+    content['stock'] = 4
+    response = client.put('/products/' + str(product_id), json=content)
+    content = response.json()
+    assert content['name'] == 'edited'
+    assert content['price'] == 0.5
+    assert content['stock'] == 4
