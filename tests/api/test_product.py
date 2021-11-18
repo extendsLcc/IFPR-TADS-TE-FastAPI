@@ -4,7 +4,7 @@ from fastapi import status
 from tests.mocks.products import create_valid_product
 
 
-def test_empty_paginated_products(client: TestClient) -> None:
+def test_list_products(client: TestClient) -> None:
     response = client.get("/products?limit=2")
     content = response.json()
     assert content['per_page'] == 2
