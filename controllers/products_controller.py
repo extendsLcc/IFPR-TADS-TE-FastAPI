@@ -12,8 +12,9 @@ async def list_products():
 
 
 @router.post('', response_model=Product)
-async def create_product(product: Product):
+async def create_product(product: Product, response: Response):
     await product.save()
+    response.status_code=status.HTTP_201_CREATED
     return product
 
 
