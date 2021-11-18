@@ -1,6 +1,10 @@
-from typing import List
+from fastapi import FastAPI
 
-from fastapi import FastAPI, Response, status
-from pydantic import BaseModel
+from routes import router
+from config import database
 
 app = FastAPI()
+
+app.state.database = database
+
+app.include_router(router,prefix='')
