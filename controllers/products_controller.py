@@ -34,6 +34,8 @@ async def list_products(name: Optional[str] = None, page: Optional[int] = 1, lim
 
 @router.post('', response_model=Product)
 async def create_product(product: Product, response: Response):
+    if not product.has_valid_price():
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail='Product price must be positive')
     await product.save()
     response.status_code = status.HTTP_201_CREATED
     return product
@@ -50,6 +52,8 @@ async def update_product(product_id: int, update_product_dto: UpdateProductDto):
     for prop, value in filled_update_properties.items():
         setattr(product, prop, value)
     updated_columns_names = filled_update_properties.keys()
+    if not product.has_valid_price():
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail='Product price must be positive')
     await product.update(_columns=updated_columns_names)
     return product
 

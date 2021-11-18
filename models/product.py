@@ -11,3 +11,6 @@ class Product(ormar.Model):
     name: str = ormar.String(max_length=255)
     price: float = ormar.Float()
     stock: int = ormar.Integer()
+
+    def has_valid_price(self):
+        return self.price >= 0
