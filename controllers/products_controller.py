@@ -1,5 +1,6 @@
 from typing import List
 from fastapi import APIRouter, HTTPException, status, Response
+from functools import reduce
 
 from dto.update_product_dto import UpdateProductDto
 from models.product import Product
@@ -40,3 +41,12 @@ async def delete_product(product_id: int):
     if not product:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Product not found')
     await product.delete()
+
+
+@router.get('/stock-price')
+async def get_total_stock_price():
+    products = await Product.objects.all()
+    return {
+        'stock_price': reduce(lambda total_price, product: total_price + product.price * product.stock, products, 0),
+        'products_amount': reduce(lambda total_stock, product: total_stock + product.stock, products, 0),
+    }
