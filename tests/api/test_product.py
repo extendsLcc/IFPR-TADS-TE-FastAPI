@@ -1,7 +1,6 @@
 from fastapi.testclient import TestClient
 from fastapi import status
 
-from models.product import Product
 from tests.mocks.products import create_valid_product
 
 
