@@ -1,4 +1,7 @@
 import ormar
+from fastapi import HTTPException, status
+from pydantic import validator
+
 from config import database, metadata
 
 
@@ -12,5 +15,9 @@ class Product(ormar.Model):
     price: float = ormar.Float()
     stock: int = ormar.Integer()
 
-    def has_valid_price(self):
-        return self.price >= 0
+    @validator('price')
+    def has_valid_price(cls, property_value):
+        if not property_value >= 0:
+            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                                detail='Product price must be positive')
+        return property_value
