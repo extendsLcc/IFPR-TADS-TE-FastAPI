@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, status, Response
 
 from models.product import Product
 
@@ -15,3 +15,12 @@ async def list_products():
 async def create_product(product: Product):
     await product.save()
     return product
+
+
+@router.delete('/{product_id}')
+async def delete_product(product_id: int, response: Response):
+    product = await Product.objects.get_or_none(id=product_id)
+    if not product:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Product not found')
+    await product.delete()
+    response.status_code = status.HTTP_200_OK
