@@ -31,6 +31,7 @@ def test_update_product(client: TestClient) -> None:
     content['stock'] = 4
     response = client.put('/products/' + str(product_id), json=content)
     content = response.json()
+    assert response.status_code == status.HTTP_200_OK
     assert content['name'] == 'edited'
     assert content['price'] == 0.5
     assert content['stock'] == 4
