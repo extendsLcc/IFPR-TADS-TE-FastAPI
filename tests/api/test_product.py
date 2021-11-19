@@ -20,6 +20,13 @@ def test_create_product(client: TestClient) -> None:
     assert content['name'] == product_mock['name']
 
 
+def test_create_product_validation(client: TestClient) -> None:
+    product_mock = create_valid_product()
+    product_mock['price'] = -1
+    response = client.post('/products', json=product_mock)
+    assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+
+
 def test_get_product(client: TestClient) -> None:
     product_mock = create_valid_product()
     response = client.post('/products', json=product_mock)
