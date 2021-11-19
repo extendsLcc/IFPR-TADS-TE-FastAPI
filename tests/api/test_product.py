@@ -5,7 +5,7 @@ from tests.mocks.products import create_valid_product
 
 
 def test_list_products(client: TestClient) -> None:
-    response = client.get("/products?limit=2")
+    response = client.get('/products?limit=2')
     content = response.json()
     assert content['per_page'] == 2
     assert len(content['data']) == 0
@@ -14,7 +14,7 @@ def test_list_products(client: TestClient) -> None:
 
 def test_create_product(client: TestClient) -> None:
     product_mock = create_valid_product()
-    response = client.post("/products", json=product_mock)
+    response = client.post('/products', json=product_mock)
     content = response.json()
     assert response.status_code == status.HTTP_201_CREATED
     assert content['name'] == product_mock['name']
@@ -22,7 +22,7 @@ def test_create_product(client: TestClient) -> None:
 
 def test_update_product(client: TestClient) -> None:
     product_mock = create_valid_product()
-    response = client.post("/products", json=product_mock)
+    response = client.post('/products', json=product_mock)
     content = response.json()
     #
     product_id = content.pop('id')
@@ -39,11 +39,11 @@ def test_update_product(client: TestClient) -> None:
 
 def test_delete_product(client: TestClient) -> None:
     product_mock = create_valid_product()
-    response = client.post("/products", json=product_mock)
+    response = client.post('/products', json=product_mock)
     content = response.json()
     product_id = content.pop('id')
-    response = client.delete('/products/' + str(product_id) )
+    response = client.delete('/products/' + str(product_id))
     assert response.status_code == status.HTTP_200_OK
-    response = client.get("/products")
+    response = client.get('/products')
     content = response.json()
     assert content['total'] == 0
