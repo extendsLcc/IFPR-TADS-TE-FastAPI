@@ -61,6 +61,12 @@ def test_update_product(client: TestClient) -> None:
     assert content['stock'] == 4
 
 
+def test_update_product_404(client: TestClient) -> None:
+    product_mock = create_valid_product()
+    response = client.put('/products/1', json=product_mock)
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+
+
 def test_delete_product(client: TestClient) -> None:
     product_mock = create_valid_product()
     response = client.post('/products', json=product_mock)
