@@ -53,7 +53,7 @@ def test_update_product(client: TestClient) -> None:
     content['name'] = 'edited'
     content['price'] = 0.5
     content['stock'] = 4
-    response = client.put('/products/' + str(product_id), json=content)
+    response = client.put(f'/products/{product_id}', json=content)
     content = response.json()
     assert response.status_code == status.HTTP_200_OK
     assert content['name'] == 'edited'
@@ -72,7 +72,7 @@ def test_delete_product(client: TestClient) -> None:
     response = client.post('/products', json=product_mock)
     content = response.json()
     product_id = content.pop('id')
-    response = client.delete('/products/' + str(product_id))
+    response = client.delete(f'/products/{product_id}')
     assert response.status_code == status.HTTP_200_OK
     response = client.get('/products')
     content = response.json()
@@ -93,14 +93,16 @@ def test_get_total_stock_price(client: TestClient) -> None:
 
 def test_list_products_filter(client: TestClient) -> None:
     products_amount = 3
+    search_name = '1'
     for index in range(products_amount):
         product_mock = create_valid_product()
-        product_mock['name'] += ' ' + str(index)
+        product_mock['name'] += f' {index}'
         client.post('/products', json=product_mock)
-    response = client.get('/products?name=1')
+    response = client.get(f'/products?name={search_name}')
     content = response.json()
     products = content['data']
     first_result = next(iter(products))
+    assert search_name in first_result['name']
 
 
 def test_list_products_pagination(client: TestClient) -> None:
