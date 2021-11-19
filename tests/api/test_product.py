@@ -83,7 +83,7 @@ def test_get_total_stock_price(client: TestClient) -> None:
     products_amount = 2
     for i in range(products_amount):
         product_mock = create_valid_product()
-        response = client.post('/products', json=product_mock)
+        client.post('/products', json=product_mock)
     response = client.get('/products/stock-price')
     content = response.json()
     product_mock = create_valid_product()
