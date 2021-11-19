@@ -67,5 +67,5 @@ async def get_total_stock_price():
     products = await Product.objects.all()
     return {
         'stock_price': reduce(lambda total_price, product: total_price + product.price * product.stock, products, 0),
-        'products_amount': reduce(lambda total_stock, product: total_stock + product.stock, products, 0),
+        'stock_amount': reduce(lambda total_stock, product: total_stock + product.stock, products, 0),
     }
