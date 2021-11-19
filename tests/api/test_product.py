@@ -119,5 +119,6 @@ def test_list_products_pagination(client: TestClient) -> None:
     assert content['per_page'] == limit
     assert content['total'] == products_amount
     products = content['data']
+    assert len(products) == limit
     for index, product in enumerate(products):
         assert str(limit + index) in product['name']
