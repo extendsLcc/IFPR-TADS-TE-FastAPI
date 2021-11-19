@@ -89,3 +89,16 @@ def test_get_total_stock_price(client: TestClient) -> None:
     product_mock = create_valid_product()
     assert content['stock_price'] == product_mock['price'] * product_mock['stock'] * products_amount
     assert content['stock_amount'] == products_amount * product_mock['stock']
+
+
+def test_list_products_filter(client: TestClient) -> None:
+    products_amount = 3
+    for index in range(products_amount):
+        product_mock = create_valid_product()
+        product_mock['name'] += ' ' + str(index)
+        client.post('/products', json=product_mock)
+    response = client.get('/products?name=1')
+    content = response.json()
+    products = content['data']
+    first_result = next(iter(products))
+    assert '1' in first_result['name']
