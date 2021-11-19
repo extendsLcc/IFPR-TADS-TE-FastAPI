@@ -39,6 +39,11 @@ def test_get_product(client: TestClient) -> None:
     assert created_product['stock'] == retrieved_product['stock']
 
 
+def test_get_product_404(client: TestClient) -> None:
+    response = client.get('/products/1')
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+
+
 def test_update_product(client: TestClient) -> None:
     product_mock = create_valid_product()
     response = client.post('/products', json=product_mock)
