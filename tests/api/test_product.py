@@ -47,3 +47,15 @@ def test_delete_product(client: TestClient) -> None:
     response = client.get('/products')
     content = response.json()
     assert content['total'] == 0
+
+
+def test_get_total_stock_price(client: TestClient) -> None:
+    products_amount = 2
+    for i in range(products_amount):
+        product_mock = create_valid_product()
+        response = client.post('/products', json=product_mock)
+    response = client.get('/products/stock-price')
+    content = response.json()
+    product_mock = create_valid_product()
+    assert content['stock_price'] == product_mock['price'] * product_mock['stock'] * products_amount
+    assert content['stock_amount'] == products_amount * product_mock['stock']
