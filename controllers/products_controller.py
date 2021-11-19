@@ -39,6 +39,14 @@ async def create_product(product: Product, response: Response):
     return product
 
 
+@router.get('/{product_id}', response_model=Product)
+async def get_product(product_id: int):
+    product = await Product.objects.get_or_none(id=product_id)
+    if not product:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Product not found')
+    return product
+
+
 @router.put('/{product_id}')
 async def update_product(product_id: int, update_product_dto: UpdateProductDto):
     product = await Product.objects.get_or_none(id=product_id)
