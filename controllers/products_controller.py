@@ -39,6 +39,15 @@ async def create_product(product: Product, response: Response):
     return product
 
 
+@router.get('/stock-price')
+async def get_total_stock_price():
+    products = await Product.objects.all()
+    return {
+        'stock_price': reduce(lambda total_price, product: total_price + product.price * product.stock, products, 0),
+        'stock_amount': reduce(lambda total_stock, product: total_stock + product.stock, products, 0),
+    }
+
+
 @router.get('/{product_id}', response_model=Product)
 async def get_product(product_id: int):
     product = await Product.objects.get_or_none(id=product_id)
@@ -68,12 +77,3 @@ async def delete_product(product_id: int):
     if not product:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Product not found')
     await product.delete()
-
-
-@router.get('/stock-price')
-async def get_total_stock_price():
-    products = await Product.objects.all()
-    return {
-        'stock_price': reduce(lambda total_price, product: total_price + product.price * product.stock, products, 0),
-        'stock_amount': reduce(lambda total_stock, product: total_stock + product.stock, products, 0),
-    }
