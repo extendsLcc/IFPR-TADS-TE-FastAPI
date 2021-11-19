@@ -101,4 +101,21 @@ def test_list_products_filter(client: TestClient) -> None:
     content = response.json()
     products = content['data']
     first_result = next(iter(products))
-    assert '1' in first_result['name']
+
+
+def test_list_products_pagination(client: TestClient) -> None:
+    products_amount = 9
+    limit = 3
+    page = 2
+    for index in range(products_amount):
+        product_mock = create_valid_product()
+        product_mock['name'] += f' {index}'
+        client.post('/products', json=product_mock)
+    response = client.get(f'/products?limit={limit}&page={page}')
+    content = response.json()
+    assert content['page'] == page
+    assert content['per_page'] == limit
+    assert content['total'] == products_amount
+    products = content['data']
+    for index, product in enumerate(products):
+        assert str(limit + index) in product['name']
