@@ -20,6 +20,18 @@ def test_create_product(client: TestClient) -> None:
     assert content['name'] == product_mock['name']
 
 
+def test_get_product(client: TestClient) -> None:
+    product_mock = create_valid_product()
+    response = client.post('/products', json=product_mock)
+    created_product = response.json()
+    response = client.get('/products/' + str(created_product['id']))
+    retrieved_product = response.json()
+    assert created_product['id'] == retrieved_product['id']
+    assert created_product['name'] == retrieved_product['name']
+    assert created_product['price'] == retrieved_product['price']
+    assert created_product['stock'] == retrieved_product['stock']
+
+
 def test_update_product(client: TestClient) -> None:
     product_mock = create_valid_product()
     response = client.post('/products', json=product_mock)
